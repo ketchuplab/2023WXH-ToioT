@@ -1,0 +1,1 @@
+start D:/Anaconda3/envs/web3/python.exe .\czLocalDeviceService.py

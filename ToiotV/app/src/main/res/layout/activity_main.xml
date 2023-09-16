@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_gradient"
+    tools:context=".MainActivity">
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/logTextView"-->
+    <!--        android:layout_width="384dp"-->
+    <!--        android:layout_height="618dp"-->
+    <!--        android:text="TextView"-->
+    <!--        android:scrollbars="vertical"-->
+    <!--        tools:layout_editor_absoluteX="14dp"-->
+    <!--        tools:layout_editor_absoluteY="16dp" />-->
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginBottom="1dp"
+        android:drawableLeft="@drawable/scan"
+        android:text="Scan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintStart_toEndOf="@+id/btnLocate"
+        app:layout_constraintTop_toBottomOf="@+id/logTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btnLocate"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginBottom="1dp"
+        android:drawableLeft="@drawable/location"
+        android:text="Locate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnScan"
+        app:layout_constraintStart_toEndOf="@+id/btnSetting"
+        app:layout_constraintTop_toBottomOf="@+id/logTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/logTextView"
+        android:layout_width="354dp"
+        android:layout_height="459dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="25dp"
+        android:fadeScrollbars="false"
+        android:maxLines="100"
+        android:padding="10dp"
+        android:scrollbarSize="6dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@color/colorPrimary"
+        android:scrollbars="vertical"
+        android:text="Log messages will be displayed here."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/beaconTextView" />
+
+    <TextView
+        android:id="@+id/beaconTextView"
+        android:layout_width="344dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="45dp"
+        android:paddingLeft="5dp"
+        android:text="Beacon Info: Nothing"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/walletTextView" />
+
+    <TextView
+        android:id="@+id/bonusTextView"
+        android:layout_width="344dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="45dp"
+        android:drawableLeft="@drawable/award_token"
+        android:lineSpacingExtra="8sp"
+        android:text="current bonus: 0 ETH"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/walletTextView"
+        android:layout_width="344dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="45dp"
+        android:padding="2dp"
+        android:shadowColor="#F8F6F6"
+        android:text="Wallet:0xf39Fd6**************92266"
+        android:textAlignment="textStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bonusTextView" />
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gif_iamge_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/rotcoin"/>
+
+    <Button
+        android:id="@+id/btnSetting"
+        android:layout_width="133dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginBottom="1dp"
+        android:drawableLeft="@drawable/setting"
+        android:text="Set"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/logTextView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logTextView"
+        app:layout_constraintVertical_bias="1.0" />
+
+</android.support.constraint.ConstraintLayout>

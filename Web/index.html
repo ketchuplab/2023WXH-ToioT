@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<base target="_top">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Toiot</title>
+
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+	<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> -->
+	
+	<!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
+	
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script> -->
+	<!-- <script src="https://unpkg.com/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.css" /> -->
+ 
+	<script src="leaflet.js"		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<link rel="stylesheet" href="leaflet.css"		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<script src="L.Control.Locate.min.js"></script>
+	<link rel="stylesheet" href="L.Control.Locate.min.css" />
+
+	<script src="../leaflet-heat.js"></script>
+
+	<script src="./cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>  
+	<script src="script.js"></script>
+	<script src="devices.js"></script>
+
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+		}
+
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+		.custom-button {
+			background-color: #fff;
+			border: 1px solid #ccc;
+			padding: 5px 10px;
+			cursor: pointer;
+		}
+
+	</style>
+
+</head>
+
+<body>
+	<div id="map" style="width: 100%; height: 100%;"></div>
+	<script>
+		
+        //const providerUrl = 'https://polygon-rpc.com'; // 替换为正确的 Polygon RPC 网络 URL
+        //const gProviderUrl = 'http://172.18.9.65:8545'; // 替换为正确的 Polygon RPC 网络 URL
+        //const gWsProviderUrl = 'ws://172.18.9.65:8545';
+        //const gProviderUrl = 'http://127.0.0.1:8545'; // 替换为正确的 Polygon RPC 网络 URL
+        //const gWsProviderUrl = 'ws://127.0.0.1:8545';
+        
+		//const gProviderUrl = 'http://10.10.1.72:8545'; // 替换为正确的 Polygon RPC 网络 URL
+        //const gWsProviderUrl = 'ws://10.10.1.72:8545';
+		
+        const gProviderUrl = 'http://172.20.10.4:8545'; // 替换为正确的 Polygon RPC 网络 URL
+        const gWsProviderUrl = 'ws://172.20.10.4:8545';
+		
+		var gAccountAddr = ''
+		var gContractAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3'//'0x7Cf4be31f546c04787886358b9486ca3d62B9acf'; // 替换为你的合约地址 
+		var gWeb3 = null;
+		var useAuto = true;
+ 
+		async function btnConnectWallet() {
+			// Connect wallet logic
+			await connectWallet();
+		}
+
+		var map = L.map('map').setView([31.249892,121.481447], 12);
+		var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="https://kclab.xyz">ketchup lab </a> contribute',
+		}).addTo(map);
+
+		// 添加定位当前位置
+		L.control.locate().addTo(map);
+
+		const popup = L.popup()
+			.setLatLng([31.249892,121.481447])
+			.setContent('Toiot at Shanghai Hackathon.')
+			.openOn(map);
+
+		function onMapClickX(e) {
+			popup
+				.setLatLng(e.latlng)
+				.setContent(`Toiot at ${e.latlng.toString()}`)
+				.openOn(map);
+		}
+
+		// 点击地图时触发的事件
+		function onMapClick(e) {
+			var lat = e.latlng.lat.toFixed(6);
+			var lng = e.latlng.lng.toFixed(6);
+
+			// 创建弹出框内容，包括编辑框和保存按钮
+			var popupContent = ` 
+			<table>
+				<tr>
+					<td><b>经度:</b></td>
+					<td>${lng}</td>
+				</tr>
+				<tr>
+					<td><b>纬度:</b></td>
+					<td>${lat}</td>
+				</tr>
+				<tr>
+					<td><b>商家名称:</b></td>
+					<td><input type="text" id="businessNameInput"></td>
+				</tr>
+				<tr>
+					<td><b>设备MAC地址:</b></td>
+					<td><input type="text" id="macAddressInput"></td>
+				</tr>
+				<tr>
+					<td><b>存储Token数:</b></td>
+					<td><input type="text" id="tokenCountInput"></td>
+				</tr>
+			</table>
+
+			<button onclick="saveData(${lat}, ${lng})">注册设备</button>
+			
+			`;// end of content
+
+			// 创建弹出框并在点击位置显示
+			popupRegDevice = L.popup()
+				.setLatLng(e.latlng)
+				.setContent(popupContent)
+				.openOn(map);
+
+		}
+		var popupRegDevice;
+		var heatLayer;
+		// 保存数据的函数
+		async function  saveData(lat, lng) {
+			var mcName = document.getElementById("businessNameInput").value;
+			var macAddress = document.getElementById("macAddressInput").value;
+			var tokenCount = document.getElementById("tokenCountInput").value;
+
+			// 在这里执行保存数据的逻辑，例如将数据发送到服务器
+			console.log("商家名称:", mcName);
+			console.log("经度:", lat);
+			console.log("纬度:", lng);
+			console.log("MAC地址:", macAddress);
+			console.log("Token个数:", tokenCount);
+			// macAddress,mcName,latitude,longitude,tokenCnt
+			await registerOneDevice(macAddress,mcName,lat,lng,tokenCount);
+			// 关闭弹出框
+			map.closePopup(popupRegDevice);
+		}
+
+		const polygon = L.polygon([
+			[31.251497, 121.478834],
+			[31.251846, 121.484370],
+			[31.248544, 121.484563],
+			[31.248360, 121.479306],
+		]).addTo(map).bindPopup('Shanghai Hackathon.');
+
+		map.on('click', onMapClick);
+		console.log('addressPoints => ', addressPoints)
+		//addressPoints = addressPoints.map(function (p) { return [p[0], p[1]]; }); 
+		var heatPoints = addressPoints.map(([lat, lng, token, mac,name]) => [lat, lng, Math.sqrt(token) / 5]);
+
+		console.log('heatPoints => ', heatPoints);
+		heatLayer = L.heatLayer(heatPoints).addTo(map);
+		heatLayer.setOptions({
+			radius: 25,     // 热力图点的半径,单位米
+			blur: 15,       // 模糊半径
+			maxZoom: 10,    // 在哪个缩放级别开始显示热力图
+		});
+  
+		map.addLayer(heatLayer);
+		// 添加标签 
+		addressPoints.forEach(([lat, lng, token, mac,name]) => {
+			addOneDevice(lat, lng, token, mac,name);
+		});
+ 
+	// const circleHeat = L.circle([31.25098,121.49203], {
+	// 	color: '#aaff33',
+	// 	fillColor: '#a03',
+	// 	fillOpacity: 0.5,
+	// 	radius: 1500,
+	// 	weight: 20
+	// }).addTo(map).bindPopup('I am a circle.');
+	initWeb3();
+
+	addTestButton();
+	</script>
+
+</body>
+
+</html>
